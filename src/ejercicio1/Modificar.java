@@ -11,7 +11,7 @@ import ejercicio1.datos.KardexDatos;
  * @author LENOVO
  */
 public class Modificar extends javax.swing.JDialog {
-   static  int a;
+ public  static  int a;
 
     /**
      * Creates new form Modificar

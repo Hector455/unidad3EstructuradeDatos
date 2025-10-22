@@ -1,6 +1,5 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
+ dialog donde ingresas los datos para agregar
  */
 package ejercicio1;
 
@@ -17,8 +16,16 @@ public class AgregarCalificaciones extends javax.swing.JDialog {
      * Creates new form AgregarCalificaciones
      */
     public AgregarCalificaciones(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
+         super(parent, modal);
+    initComponents();
+
+    // Si estamos en modo modificación, cargar los datos existentes
+    if (TablaKardex.modi) {
+        int index = Modificar.a;
+        txtMateria.setText(KardexDatos.datos[index][0]);
+        txtSemestre.setText(KardexDatos.datos[index][1]);
+        txtCalificacion.setText(KardexDatos.datos[index][2]);
+    }
     }
 
     /**
@@ -152,24 +159,31 @@ public class AgregarCalificaciones extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 // metodo para guardar elementos
     private void btnGuardadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardadActionPerformed
-        // TODO add your handling code here:
-        String materia = txtMateria.getText();
-    String semestre = txtSemestre.getText();
-    String calificacion = txtCalificacion.getText();
+     String materia = txtMateria.getText();
+String semestre = txtSemestre.getText();
+String calificacion = txtCalificacion.getText();
 
-  
-    // Validar que no se exceda el límite de 10 registros
+if (TablaKardex.modi) {
+    // <-- modo modificar: solo actualiza la fila seleccionada
+    int fila = TablaKardex.filaSeleccionada;
+    KardexDatos.datos[fila][0] = materia;
+    KardexDatos.datos[fila][1] = semestre;
+    KardexDatos.datos[fila][2] = calificacion;
+} else {
+    // <-- modo agregar: se agrega al siguiente índice disponible
     if (KardexDatos.index < 10) {
         KardexDatos.datos[KardexDatos.index][0] = materia;
         KardexDatos.datos[KardexDatos.index][1] = semestre;
         KardexDatos.datos[KardexDatos.index][2] = calificacion;
         KardexDatos.index++;
-        JOptionPane.showMessageDialog(this, "Datos guardados correctamente");
-        this.dispose(); // Cierra el diálogo
     } else {
         JOptionPane.showMessageDialog(this, "Ya se alcanzó el límite de 10 registros");
+        return;
     }
-    
+}
+
+JOptionPane.showMessageDialog(this, "Datos guardados correctamente");
+this.dispose();
                 
         
     }//GEN-LAST:event_btnGuardadActionPerformed
@@ -201,7 +215,13 @@ public class AgregarCalificaciones extends javax.swing.JDialog {
         btnGuardad.doClick();
          }
     }//GEN-LAST:event_btnGuardadKeyPressed
-
+public void cargarDatos(int fila) {
+    if (fila != -1) {
+        txtMateria.setText(KardexDatos.datos[fila][0]);
+        txtSemestre.setText(KardexDatos.datos[fila][1]);
+        txtCalificacion.setText(KardexDatos.datos[fila][2]);
+    }
+}
     /**
      * @param args the command line arguments
      */

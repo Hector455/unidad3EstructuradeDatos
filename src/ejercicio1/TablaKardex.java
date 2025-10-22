@@ -4,8 +4,8 @@ y mostrando posterior mentente
 Hector Alejandro Hernandez Velasco 14-10-2025
  */
 package ejercicio1;
-
 import ejercicio1.datos.KardexDatos;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -14,6 +14,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TablaKardex extends javax.swing.JFrame {
 public static boolean modi=false;
+public static int filaSeleccionada = -1;
+private final String columnas[] = {"Materia", "Semestre", "Calificación"};
     /**
      * Creates new form TablaKardex
      */
@@ -39,6 +41,7 @@ public static boolean modi=false;
         prom = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
+        btnModificar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -85,6 +88,13 @@ public static boolean modi=false;
                 .addGap(30, 30, 30))
         );
 
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -92,11 +102,15 @@ public static boolean modi=false;
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnAgregar)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(prom)
-                        .addGap(13, 13, 13)))
+                        .addGap(13, 13, 13))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnModificar)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAgregar))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addContainerGap(30, Short.MAX_VALUE))
@@ -116,7 +130,9 @@ public static boolean modi=false;
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(prom)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                .addComponent(btnAgregar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAgregar)
+                    .addComponent(btnModificar))
                 .addGap(15, 15, 15))
         );
 
@@ -124,21 +140,38 @@ public static boolean modi=false;
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        // TODO add your handling code here:
-        var dialog = new AgregarCalificaciones(this,true);
-        dialog.setVisible(true);
-        actualizarTabla();
-         double promedio = KardexDatos.calcularPromedio();
-    prom.setText("El Promedio es: " + String.format("%.2f", promedio));
+        TablaKardex.modi = false; // modo agregar
+    var dialog = new AgregarCalificaciones(this, true);
+    dialog.setVisible(true);
+    actualizarTabla(); // actualiza tabla y promedio
     }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+     int fila = tablaDatos.getSelectedRow(); // fila seleccionada
+    if (fila != -1) {
+        filaSeleccionada = fila; // guarda el índice para modificar
+        TablaKardex.modi = true; // modo modificar
+
+        // Crear el diálogo
+        AgregarCalificaciones dialog = new AgregarCalificaciones(this, true);
+        
+        // <-- Aquí cargamos los datos correctos del registro seleccionado
+        dialog.cargarDatos(fila);
+
+        dialog.setVisible(true);
+        actualizarTabla(); // actualiza tabla y promedio
+    } else {
+        JOptionPane.showMessageDialog(this, "Selecciona una fila para modificar");
+    }
+    }//GEN-LAST:event_btnModificarActionPerformed
    // este metodo permite actualizar su tabla con los datos que tiene el arreglo
     private void actualizarTabla(){
-        String columnas []= {"Materia", "Semestre", "Calificaciones"};
-       
-         DefaultTableModel model =
-                 new DefaultTableModel(KardexDatos.datos, columnas);
-         tablaDatos.setModel(model);
-         // da formato a la tabla
+       DefaultTableModel model = new DefaultTableModel(KardexDatos.datos, columnas);
+    tablaDatos.setModel(model);
+
+    // Actualizar el promedio
+    double promedio = KardexDatos.calcularPromedio();
+    prom.setText("El Promedio es: " + String.format("%.2f", promedio));
                 
     }
     /**
@@ -178,6 +211,7 @@ public static boolean modi=false;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnModificar;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel2;

@@ -24,17 +24,12 @@ public static double calcularPromedio() {
     return suma / KardexDatos.index;
     // metodo que calcula el promedio segun lo vallan ingresando
 }
-public static int  buscar(String dato){
-    int a=0;
-    for (int i=0;i<datos.length;i++){
-        if (dato.equals(datos[i][0])){
-             a=i;
+public static int buscar(String dato) {
+    for (int i = 0; i < index; i++) {
+        if (dato.equalsIgnoreCase(datos[i][0])) {
+            return i; // retorna el índice encontrado
         }
-        else {
-            a=-1;           
-        }
-     
     }
-    return a;
+    return -1; // si no se encontró
 } 
 }
