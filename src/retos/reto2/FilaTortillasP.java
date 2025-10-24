@@ -1,92 +1,184 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ Programa de tortilleria qye agrega personas a una fila puede sacar en orden o inverso mostrar terminar programa
+Hector Alejandro Hernandez Velasco 24/10/2025
  */
 package retos.reto2;
 
 import java.util.Scanner;
-import static retos.reto2.FilaTortillas.agregar;
 
-/**
- *
- * @author LENOVO
- */
 public class FilaTortillasP {
-    static Scanner sc = new Scanner (System.in);
-static String [] fila = new String [4];
+    static Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
-        int i =0;
-      int b;
-      Persona inicioFila= null;
-        do{
-            System.out.println("1. agregar cliente ");
-            System.out.println("2. atender cliente");
-            System.out.println("3 cliente sale de la fila ");
-            System.out.println("4 terminar servicion ");
-            System.out.println("ingrese opcion ");
-           b =sc.nextInt();
-           sc.nextLine();
-           switch (b){
-               case 1:
-                   System.out.println("Dame un nombre ");
-                   String nombre =sc.nextLine();
-                   Persona personaNueva = new Persona();
-                   personaNueva.nombre= nombre;
-                   if (inicioFila== null)
-                       inicioFila=personaNueva;
-                   else{
-                       Persona siguiente= inicioFila;
-                       while (siguiente.vieneAtras!= null){
-                           siguiente = siguiente.vieneAtras;
-                       }
-                       siguiente.vieneAtras=personaNueva;
-                   }
-                 imprimirLista(inicioFila);      
-                   
-                   break;
-               case 2:
-                   if (inicioFila!=null)
-                       inicioFila= inicioFila.vieneAtras;
-                   imprimirLista(inicioFila);
-                   break;
-               case 3:
-                   System.out.println("A quien quieres eliminar: ");
-                   String elimina= sc.nextLine();
-                   Persona buscado=inicioFila;
-                 Persona atras=null;
-                 while(buscado.nombre.endsWith(elimina)&& buscado!=null){
-                     atras =buscado;
-                     buscado=buscado.vieneAtras;
-                 }
-                 if (buscado!=null){
-                     if (atras== null)inicioFila=inicioFila.vieneAtras;
-                     else if (buscado.vieneAtras== null)atras.vieneAtras=null;
-                     else atras.vieneAtras=buscado.vieneAtras;
-                 }
-               case 4:
-                   System.out.println("Terminando servicio ");
-                   int contador= 0;
-                   while(inicioFila!=null){
-                       contador++;
-                       inicioFila= inicioFila.vieneAtras;
-                   }
-                   System.out.println("las personas sin atender son "+contador);
-                   
-           }
-               
-         
-            
+        int opcion;
+        Persona inicioFila = null;
+        Persona finFila = null;
+
+        do {
+            System.out.println("\n--- FILA DE TORTILLAS ---");
+            System.out.println("1. Agregar cliente (Regular o Preferencial)");
+            System.out.println("2. Atender cliente");
+            System.out.println("3. Cliente sale de la fila");
+            System.out.println("4. Mostrar fila (normal o inversa)");
+            System.out.println("5. Terminar servicio");
+            System.out.print("Ingrese opcion: ");
+            opcion = sc.nextInt();
+            sc.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Nombre del cliente: ");
+                    String nombre = sc.nextLine();
+                    System.out.print("Tipo de cliente (R = Regular / P = Preferencial): ");
+                    char tipo = sc.next().toUpperCase().charAt(0);
+                    sc.nextLine();
+
+                    Persona nueva = new Persona(nombre);
+
+                    if (inicioFila == null) {
+                        inicioFila = finFila = nueva;
+                    } else if (tipo == 'P') {
+                        // Preferencial: al inicio
+                        nueva.vieneAtras = inicioFila;
+                        inicioFila.vieneAdelante = nueva;
+                        inicioFila = nueva;
+                    } else {
+                        // Regular: al final
+                        finFila.vieneAtras = nueva;
+                        nueva.vieneAdelante = finFila;
+                        finFila = nueva;
+                    }
+                    System.out.println("Cliente agregado correctamente.");
+                    break;
+
+                case 2:
+                    if (inicioFila != null) {
+                        System.out.println("Atendiendo a: " + inicioFila.nombre);
+                        inicioFila = inicioFila.vieneAtras;
+                        if (inicioFila != null)
+                            inicioFila.vieneAdelante = null;
+                        else
+                            finFila = null;
+                    } else {
+                        System.out.println("No hay clientes en la fila.");
+                    }
+                    break;
+
+                case 3:
+                    if (inicioFila == null) {
+                        System.out.println("La fila esta vacia.");
+                        break;
+                    }
+
+                    System.out.print("Nombre del cliente a eliminar: ");
+                    String eliminar = sc.nextLine();
+
+                    Persona actual = inicioFila;
+                    boolean encontrado = false;
+
+                    while (actual != null) {
+                        if (actual.nombre.equalsIgnoreCase(eliminar)) {
+                            encontrado = true;
+                            if (actual == inicioFila) {
+                                inicioFila = actual.vieneAtras;
+                                if (inicioFila != null)
+                                    inicioFila.vieneAdelante = null;
+                                else
+                                    finFila = null;
+                            } else if (actual == finFila) {
+                                finFila = actual.vieneAdelante;
+                                if (finFila != null)
+                                    finFila.vieneAtras = null;
+                                else
+                                    inicioFila = null;
+                            } else {
+                                actual.vieneAdelante.vieneAtras = actual.vieneAtras;
+                                actual.vieneAtras.vieneAdelante = actual.vieneAdelante;
+                            }
+                            System.out.println("Cliente eliminado de la fila.");
+                            break;
+                        }
+                        actual = actual.vieneAtras;
+                    }
+
+                    if (!encontrado) {
+                        System.out.println("Cliente no encontrado en la fila.");
+                    }
+                    break;
+
+                case 4:
+                    if (inicioFila == null) {
+                        System.out.println("La fila esta vacia.");
+                        break;
+                    }
+
+                    System.out.print("Mostrar en orden normal (N) o inverso (I)? ");
+                    char orden = sc.next().toUpperCase().charAt(0);
+                    sc.nextLine();
+
+                    if (orden == 'N') {
+                        System.out.println("Fila (orden normal):");
+                        imprimirNormal(inicioFila);
+                    } else {
+                        System.out.println("Fila (orden inverso):");
+                        imprimirInverso(finFila);
+                    }
+                    break;
+
+                case 5:
+                    System.out.println("\nServicio terminado.");
+                    int contador = 0;
+                    Persona aux = inicioFila;
+                    while (aux != null) {
+                        contador++;
+                        aux = aux.vieneAtras;
+                    }
+
+                    System.out.println("Personas sin atender: " + contador);
+                    if (inicioFila != null) {
+                        System.out.println("Clientes restantes en la fila:");
+                        imprimirNormal(inicioFila);
+                    } else {
+                        System.out.println("No hay nadie en la fila.");
+                    }
+                    break;
+
+                default:
+                    System.out.println("Opcion no valida, intente nuevamente.");
+            }
+
+        } while (opcion != 5);
+    }
+
+    // Imprime en orden normal (inicio -> final)
+    public static void imprimirNormal(Persona persona) {
+        Persona temp = persona;
+        while (temp != null) {
+            System.out.print(temp.nombre + " -> ");
+            temp = temp.vieneAtras;
         }
-        while(b!=4);
-}
-    public static void imprimirLista(Persona persona){
-        if (persona !=null){
-            System.out.println(persona.nombre );
-            imprimirLista(persona.vieneAtras);
+        System.out.println("FIN");
+    }
+
+    // Imprime en orden inverso (final -> inicio)
+    public static void imprimirInverso(Persona persona) {
+        Persona temp = persona;
+        while (temp != null) {
+            System.out.print(temp.nombre + " <- ");
+            temp = temp.vieneAdelante;
         }
+        System.out.println("INICIO");
     }
 }
-    class Persona{
-        String nombre;
-        Persona vieneAtras;
+
+class Persona {
+    String nombre;
+    Persona vieneAtras;     // siguiente en la fila
+    Persona vieneAdelante;  // anterior en la fila
+
+    public Persona(String nombre) {
+        this.nombre = nombre;
+        this.vieneAtras = null;
+        this.vieneAdelante = null;
     }
+}
