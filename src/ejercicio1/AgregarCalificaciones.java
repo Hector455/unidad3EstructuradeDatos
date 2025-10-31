@@ -5,6 +5,8 @@ package ejercicio1;
 
 import ejercicio1.datos.KardexDatos;
 import javax.swing.JOptionPane;
+import ejercicio1.datos.Materias; 
+
 
 /**
  *
@@ -21,10 +23,11 @@ public class AgregarCalificaciones extends javax.swing.JDialog {
 
     // Si estamos en modo modificación, cargar los datos existentes
     if (TablaKardex.modi) {
-        int index = Modificar.a;
-        txtMateria.setText(KardexDatos.datos[index][0]);
-        txtSemestre.setText(KardexDatos.datos[index][1]);
-        txtCalificacion.setText(KardexDatos.datos[index][2]);
+        //int index = Modificar.a;
+        
+       // txtMateria.setText(KardexDatos.datos[index][0]);
+      //  txtSemestre.setText(KardexDatos.datos[index][1]);
+       // txtCalificacion.setText(KardexDatos.datos[index][2]);
     }
     }
 
@@ -159,32 +162,24 @@ public class AgregarCalificaciones extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 // metodo para guardar elementos
     private void btnGuardadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardadActionPerformed
-     String materia = txtMateria.getText();
-String semestre = txtSemestre.getText();
-String calificacion = txtCalificacion.getText();
+  String materia = txtMateria.getText();
+    String semestre = txtSemestre.getText();
+    String calificacion = txtCalificacion.getText();
 
-if (TablaKardex.modi) {
-    // <-- modo modificar: solo actualiza la fila seleccionada
-    int fila = TablaKardex.filaSeleccionada;
-    KardexDatos.datos[fila][0] = materia;
-    KardexDatos.datos[fila][1] = semestre;
-    KardexDatos.datos[fila][2] = calificacion;
-} else {
-    // <-- modo agregar: se agrega al siguiente índice disponible
-    if (KardexDatos.index < 10) {
-        KardexDatos.datos[KardexDatos.index][0] = materia;
-        KardexDatos.datos[KardexDatos.index][1] = semestre;
-        KardexDatos.datos[KardexDatos.index][2] = calificacion;
-        KardexDatos.index++;
+    Materias materiaObj = new Materias();
+    materiaObj.setNombre(materia);
+    materiaObj.setSemestre(semestre);
+    materiaObj.setCalificacion(calificacion);
+
+    if (TablaKardex.modi && TablaKardex.filaSeleccionada != -1) {
+        //  Si estamos en modo modificar, reemplazamos el registro existente
+        KardexDatos.listasMaterias.set(TablaKardex.filaSeleccionada, materiaObj);
     } else {
-        JOptionPane.showMessageDialog(this, "Ya se alcanzó el límite de 10 registros");
-        return;
+        // ➕ Si no, agregamos uno nuevo
+        KardexDatos.listasMaterias.add(materiaObj);
     }
-}
 
-JOptionPane.showMessageDialog(this, "Datos guardados correctamente");
-this.dispose();
-                
+    this.dispose(); // cerrar ventana          
         
     }//GEN-LAST:event_btnGuardadActionPerformed
 
@@ -217,9 +212,10 @@ this.dispose();
     }//GEN-LAST:event_btnGuardadKeyPressed
 public void cargarDatos(int fila) {
     if (fila != -1) {
-        txtMateria.setText(KardexDatos.datos[fila][0]);
-        txtSemestre.setText(KardexDatos.datos[fila][1]);
-        txtCalificacion.setText(KardexDatos.datos[fila][2]);
+        Materias car= KardexDatos.listasMaterias.get(fila);
+        txtMateria.setText(car.getNombre());
+        txtSemestre.setText(car.getSemestre());
+        txtCalificacion.setText(car.getCalificacion());
     }
 }
     /**
