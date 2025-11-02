@@ -4,7 +4,7 @@
  */
 package ejercicio1.datos;
 
-/**
+/** de aqui se guardan los datos de la lista
  *
  * @author LENOVO
  */

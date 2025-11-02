@@ -151,14 +151,20 @@ private final String columnas[] = {"Materia", "Semestre", "Calificación"};
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+/**
+ * este boton manda al dialog para agregar
+ * @param evt 
+ */
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         TablaKardex.modi = false; // modo agregar
     var dialog = new AgregarCalificaciones(this, true);
     dialog.setVisible(true);
     actualizarTabla(); // actualiza tabla y promedio
     }//GEN-LAST:event_btnAgregarActionPerformed
-
+/**
+ * este boton manda al label pero para modificar
+ * @param evt 
+ */
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
      int fila = tablaDatos.getSelectedRow(); // fila seleccionada
     if (fila != -1) {
@@ -177,7 +183,10 @@ private final String columnas[] = {"Materia", "Semestre", "Calificación"};
         JOptionPane.showMessageDialog(this, "Selecciona una fila para modificar");
     }
     }//GEN-LAST:event_btnModificarActionPerformed
-
+    /**
+     * este boton elimina la fila seleccionada seleccionado
+     * @param evt 
+     */
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
        int fila = tablaDatos.getSelectedRow(); // obtiene la fila seleccionada

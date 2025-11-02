@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 /**
  *Esta clase me permite mantener la informacion entre las ventanas
- * 
+ * Aqui se crea la lista 
  * @author LENOVO Hector
  * 14 de octubre
  */
