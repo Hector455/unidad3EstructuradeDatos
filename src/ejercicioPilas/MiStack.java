@@ -13,7 +13,7 @@ public class MiStack {
  
     private final int MAXIMO;
     private final String[] STACK;
-    private int tope;
+    public int tope;
     
     /**
      * metodo que me permita ver el contenido de la pila 
@@ -67,7 +67,7 @@ public class MiStack {
     
     public boolean push(String value){
         boolean isSuccess;
-        if (tope<MAXIMO){
+        if (tope<MAXIMO-1){
             tope ++;
             STACK[tope]= value;
             isSuccess=true;
@@ -79,14 +79,12 @@ public class MiStack {
     }
     
     
-    public MiStack(){
-        this(10);
-    }
-    
+     
     
     public MiStack(int max){
         MAXIMO = max;
         STACK = new String[MAXIMO];
+        tope=-1;
     }
     
     
